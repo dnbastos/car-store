@@ -65,25 +65,62 @@
     }
 
     function addRow(jsonCar) {
-      var tableBody = $('[data-js="tableCar"]').get().lastElementChild;
-      tableBody.appendChild(this.createRowFragment(jsonCar));
+      var $tableBody = $('[data-js="tableCar"] tbody').get();
+      if($tableBody.childElementCount > 0){
+        var newRowIndex = +$tableBody.lastElementChild.getAttribute('value') + 1;
+      } else {
+        var newRowIndex = 0;
+      }
+      $tableBody.appendChild(this.createRowFragment(jsonCar, newRowIndex));
     }
 
-    function createRowFragment(jsonCar) {
+    function createRowFragment(jsonCar, rowIndex) {
       var $fragment = doc.createDocumentFragment();
       var $tr = doc.createElement('tr');
+      $tr.setAttribute('value', rowIndex);
       Object.keys(jsonCar).forEach(function (field) {
         var $td = doc.createElement('td');
         if (field === 'imagem') {
-          var $img = doc.createElement('img');
-          $img.setAttribute('src', jsonCar[field])
-          $td.appendChild($img);
+          $td.appendChild(createCarImg(jsonCar[field]));
         } else {
           $td.textContent = jsonCar[field];
         }
         $tr.appendChild($td);
       });
+      $tr.appendChild(getActionColumns(rowIndex));
       return $fragment.appendChild($tr);
+    }
+
+    function createCarImg(imgSrc) {
+      var $fragment = doc.createDocumentFragment();
+      var $img = doc.createElement('img');
+      $img.setAttribute('src', imgSrc);
+      return $fragment.appendChild($img);
+    }
+
+    function getActionColumns(rowIndex) {
+      var $fragment = doc.createDocumentFragment();
+      var $tdRemove = doc.createElement('td');
+      $tdRemove.appendChild(createButtonRemove(rowIndex));
+      return $fragment.appendChild($tdRemove);
+    }
+
+    function createButtonRemove(rowIndex) {
+      var $button = doc.createElement('button');
+      $button.setAttribute('data-js', 'carRemoveButton');
+      $button.setAttribute('value', rowIndex);
+      $button.innerHTML = '<p>Remover</p>';
+      $button.addEventListener('click', handleRemoveCar);
+      return $button;
+    }
+
+    function handleRemoveCar() {
+      var index = this.value;
+      getRowElementByIndex(index).remove();
+    }
+
+    function getRowElementByIndex(index) {
+      return $('[data-js="tableCar"] tbody tr[value="' + index + '"]').get();
     }
 
     return {
@@ -96,7 +133,12 @@
       handleSubmit: handleSubmit,
       getFormInputs: getFormInputs,
       addRow: addRow,
-      createRowFragment: createRowFragment
+      createRowFragment: createRowFragment,
+      createCarImg: createCarImg,
+      getActionColumns: getActionColumns,
+      createButtonRemove: createButtonRemove,
+      handleRemoveCar: handleRemoveCar,
+      getRowElementByIndex: getRowElementByIndex
     }
   }
   app().init();
