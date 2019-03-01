@@ -51,7 +51,37 @@
 
     function handleSubmit(event) {
       event.preventDefault();
-      this.addRow(this.getFormInputs());
+      this.saveCar(this.getFormInputs());
+      this.refreshSavedCars();
+    }
+
+    function saveCar(jsonCar) {
+      var success = function () {
+        console.log('Car saved!');
+      };
+      var error = function () {
+        console.log('Error while saving car.');
+      };
+      ajax('http:/localhost:3000/car').post(jsonCar, success, error);
+    }
+
+    function loadSavedCars() {
+      ajax('http:/localhost:3000/car').get((function (jsonCars) {
+        for (var index in jsonCars) {
+          this.addRow(jsonCars[index]);
+        }
+      }).bind(this));
+    }
+
+    function resetTable() {
+      var $tbody = $('[data-js="carTable"] tbody').get();
+      while ($tbody.firstChild)
+        $tbody.firstChild.remove();
+    }
+
+    function refreshSavedCars() {
+      this.resetTable();
+      this.loadSavedCars();
     }
 
     function getFormInputs() {
@@ -66,7 +96,7 @@
 
     function addRow(jsonCar) {
       var $tableBody = $('[data-js="carTable"] tbody').get();
-      if($tableBody.childElementCount > 0){
+      if ($tableBody.childElementCount > 0) {
         var newRowIndex = +$tableBody.lastElementChild.getAttribute('value') + 1;
       } else {
         var newRowIndex = 0;
@@ -78,16 +108,16 @@
       var $fragment = doc.createDocumentFragment();
       var $tr = doc.createElement('tr');
       $tr.setAttribute('value', rowIndex);
-      Object.keys(jsonCar).forEach(function (field) {
+      Object.keys(jsonCar).forEach((function (field) {
         var $td = doc.createElement('td');
-        if (field === 'imagem') {
-          $td.appendChild(createCarImg(jsonCar[field]));
+        if (field === 'image') {
+          $td.appendChild(this.createCarImg(jsonCar[field]));
         } else {
           $td.textContent = jsonCar[field];
         }
         $tr.appendChild($td);
-      });
-      $tr.appendChild(getActionColumns(rowIndex));
+      }).bind(this));
+      $tr.appendChild(this.getActionColumns(rowIndex));
       return $fragment.appendChild($tr);
     }
 
@@ -101,7 +131,7 @@
     function getActionColumns(rowIndex) {
       var $fragment = doc.createDocumentFragment();
       var $tdRemove = doc.createElement('td');
-      $tdRemove.appendChild(createButtonRemove(rowIndex));
+      $tdRemove.appendChild(this.createButtonRemove(rowIndex));
       return $fragment.appendChild($tdRemove);
     }
 
@@ -110,13 +140,14 @@
       $button.setAttribute('data-js', 'carRemoveButton');
       $button.setAttribute('value', rowIndex);
       $button.innerHTML = '<p>Remover</p>';
-      $button.addEventListener('click', handleRemoveCar);
+      $button.addEventListener('click', (function () {
+        this.removeRow($button.value);
+      }).bind(this));
       return $button;
     }
 
-    function handleRemoveCar() {
-      var index = this.value;
-      getRowElementByIndex(index).remove();
+    function removeRow(rowIndex) {
+      this.getRowElementByIndex(rowIndex).remove();
     }
 
     function getRowElementByIndex(index) {
@@ -127,17 +158,22 @@
       init: function () {
         this.initEvents();
         this.loadCompanyInfo();
+        this.loadSavedCars();
       },
       initEvents: initEvents,
       loadCompanyInfo: loadCompanyInfo,
       handleSubmit: handleSubmit,
+      saveCar: saveCar,
+      refreshSavedCars: refreshSavedCars,
+      resetTable: resetTable,
+      loadSavedCars: loadSavedCars,
       getFormInputs: getFormInputs,
       addRow: addRow,
       createRowFragment: createRowFragment,
       createCarImg: createCarImg,
       getActionColumns: getActionColumns,
       createButtonRemove: createButtonRemove,
-      handleRemoveCar: handleRemoveCar,
+      removeRow: removeRow,
       getRowElementByIndex: getRowElementByIndex
     }
   }
