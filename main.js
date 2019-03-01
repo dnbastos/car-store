@@ -39,7 +39,7 @@
   function app() {
 
     function initEvents() {
-      $('[data-js="formCarro"]').on('submit', handleSubmit.bind(this));
+      $('[data-js="carForm"]').on('submit', handleSubmit.bind(this));
     }
 
     function loadCompanyInfo() {
@@ -56,16 +56,16 @@
 
     function getFormInputs() {
       return {
-        imagem: $('[data-js=inputImagem]').get().value,
-        marca: $('[data-js=inputMarca]').get().value,
-        ano: $('[data-js=inputAno]').get().value,
-        placa: $('[data-js=inputPlaca]').get().value,
-        cor: $('[data-js=inputCor]').get().value
+        image: $('[data-js=inputImage]').get().value,
+        brandModel: $('[data-js=inputBrandModel]').get().value,
+        year: $('[data-js=inputYear]').get().value,
+        plate: $('[data-js=inputPlate]').get().value,
+        color: $('[data-js=inputColor]').get().value
       };
     }
 
     function addRow(jsonCar) {
-      var $tableBody = $('[data-js="tableCar"] tbody').get();
+      var $tableBody = $('[data-js="carTable"] tbody').get();
       if($tableBody.childElementCount > 0){
         var newRowIndex = +$tableBody.lastElementChild.getAttribute('value') + 1;
       } else {
@@ -120,7 +120,7 @@
     }
 
     function getRowElementByIndex(index) {
-      return $('[data-js="tableCar"] tbody tr[value="' + index + '"]').get();
+      return $('[data-js="carTable"] tbody tr[value="' + index + '"]').get();
     }
 
     return {

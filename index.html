@@ -19,18 +19,18 @@
     <section class="grid-section">
       <h1>Cadastrar Carros</h1>
 
-      <form action="/" data-js="formCarro">
-        <label for="imagem">
+      <form action="/" data-js="carForm">
+        <label for="image">
           Imagem do Carro (URL)
-          <input class="form-field" type="text" name="imagem" id="imagem" data-js="inputImagem" required>
+          <input class="form-field" type="text" name="image" id="image" data-js="inputImage" required>
         </label><br>
-        <label for="modelo">
+        <label for="brandModel">
           Marca / Modelo
-          <input class="form-field" type="text" name="modelo" id="modelo" data-js="inputMarca" required>
+          <input class="form-field" type="text" name="brandModel" id="brandModel" data-js="inputBrandModel" required>
         </label><br>
-        <label for="ano">
+        <label for="Year">
           Ano
-          <select class="form-field" name="ano" id="ano" data-js="inputAno" required>
+          <select class="form-field" name="year" id="year" data-js="inputYear" required>
             <option value="2019">2019</option>
             <option value="2018">2018</option>
             <option value="2017">2017</option>
@@ -40,13 +40,13 @@
             <option value="2013">2013</option>
           </select>
         </label><br>
-        <label for="placa">
+        <label for="plate">
           Placa
-          <input class="form-field" type="text" name="placa" id="placa" data-js="inputPlaca" required>
+          <input class="form-field" type="text" name="plate" id="plate" data-js="inputPlate" required>
         </label><br>
-        <label for="cor">
+        <label for="color">
           Cor
-          <input class="form-field" type="text" name="cor" id="cor" data-js="inputCor" required>
+          <input class="form-field" type="text" name="color" id="color" data-js="inputColor" required>
         </label><br>
 
         <button type="submit" class="form-field form-field-submit grid-50 grid-right">Cadastrar</button>
@@ -58,7 +58,7 @@
     <section class="grid-section">
       <h1>Carros Cadastrados</h1>
 
-      <table data-js="tableCar" class="table-control">
+      <table data-js="carTable" class="table-control">
         <thead>
           <tr>
             <th>Imagem</th>
