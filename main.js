@@ -62,11 +62,11 @@
       var error = function () {
         console.log('Error while saving car.');
       };
-      ajax('http:/localhost:3000/car').post(jsonCar, success, error);
+      ajax('http://localhost:3000/car').post(jsonCar, success, error);
     }
 
     function loadSavedCars() {
-      ajax('http:/localhost:3000/car').get((function (jsonCars) {
+      ajax('http://localhost:3000/car').get((function (jsonCars) {
         for (var index in jsonCars) {
           this.addRow(jsonCars[index]);
         }
@@ -141,17 +141,38 @@
       $button.setAttribute('value', rowIndex);
       $button.innerHTML = '<p>Remover</p>';
       $button.addEventListener('click', (function () {
-        this.removeRow($button.value);
+        this.removeCar($button.value);
       }).bind(this));
       return $button;
     }
 
+    function removeCar(rowIndex) {
+      ajax('http://localhost:3000/car').delete({plate: this.getCellText(rowIndex, 'plate')});
+      this.removeRow(rowIndex);
+    }
+
     function removeRow(rowIndex) {
-      this.getRowElementByIndex(rowIndex).remove();
+      var $row = this.getRowElementByIndex(rowIndex);
+      $row.remove();
     }
 
     function getRowElementByIndex(index) {
       return $('[data-js="carTable"] tbody tr[value="' + index + '"]').get();
+    }
+
+    function getCellText(rowIndex, field) {
+      var $tds = this.getRowElementByIndex(rowIndex).childNodes;
+      var collumIndex = this.getCollumnIndex(field);
+      return $tds[collumIndex].innerText;
+    }
+
+    function getCollumnIndex(field) {
+      var $ths = $('[data-js="carTable"] thead tr').get().children;
+      for (var index in $ths) {
+        if ($ths[index].getAttribute('data-js') === field) {
+          return index;
+        }
+      } 
     }
 
     return {
@@ -173,8 +194,11 @@
       createCarImg: createCarImg,
       getActionColumns: getActionColumns,
       createButtonRemove: createButtonRemove,
+      removeCar: removeCar,
       removeRow: removeRow,
-      getRowElementByIndex: getRowElementByIndex
+      getCellText: getCellText,
+      getRowElementByIndex: getRowElementByIndex,
+      getCollumnIndex: getCollumnIndex
     }
   }
   app().init();

@@ -4,29 +4,40 @@ var AJAX = (function () {
       return new AJAX(uri);
     }
     this.uri = uri;
+    this.jsonData = {};
     this.xhr = new XMLHttpRequest();
-    this.requestSuccess = function() {
+    this.requestSuccess = function () {
       console.log('Request OK!');
     }
-    this.requestError = function() {
+    this.requestError = function () {
       console.log('Request Error :(');
     }
   }
 
-  AJAX.prototype.get = function (callbackSuccess, callbackError) {
+  AJAX.prototype.get = function (callbackSuccess = this.requestSuccess, callbackError = this.requestError) {
     this.requestSuccess = callbackSuccess;
     this.requestError = callbackError;
-    this.xhr.open('GET', this.uri);
-    this.xhr.send();
-    this.xhr.onreadystatechange = this.handleReadyStateChange.bind(this);
+    this.startRequest('GET');
   }
 
-  AJAX.prototype.post = function (jsonData, callbackSuccess, callbackError) {
+  AJAX.prototype.post = function (jsonData, callbackSuccess = this.requestSuccess, callbackError = this.requestError) {
     this.requestSuccess = callbackSuccess;
     this.requestError = callbackError;
-    this.xhr.open('POST', this.uri);
+    this.jsonData = jsonData;
+    this.startRequest('POST', jsonData);
+  }
+
+  AJAX.prototype.delete = function (jsonData, callbackSuccess = this.requestSuccess, callbackError = this.requestError) {
+    this.requestSuccess = callbackSuccess;
+    this.requestError = callbackError;
+    this.jsonData = jsonData;
+    this.startRequest('DELETE', jsonData);
+  }
+
+  AJAX.prototype.startRequest = function (method) {
+    this.xhr.open(method, this.uri);
     this.xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    this.xhr.send(this.toQueryString(jsonData));
+    this.xhr.send(this.toQueryString(this.jsonData));
     this.xhr.onreadystatechange = this.handleReadyStateChange.bind(this);
   }
 
